@@ -2,7 +2,7 @@ module github.com/lariv-in/lariv-website
 
 go 1.26.1
 
-require github.com/lariv-in/lariv v0.6.6
+require github.com/lariv-in/lariv v0.6.8
 
 require (
 	cel.dev/expr v0.25.1 // indirect

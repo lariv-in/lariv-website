@@ -6,6 +6,7 @@ import (
 	"github.com/lariv-in/lariv"
 	"github.com/lariv-in/lariv/plugins/p_dashboard"
 	"github.com/lariv-in/lariv/plugins/p_filesystem"
+	"github.com/lariv-in/lariv/plugins/p_no_signup"
 	"github.com/lariv-in/lariv/plugins/p_users"
 	"github.com/lariv-in/lariv/plugins/p_website"
 	"github.com/lariv-in/lariv/registry"
@@ -17,6 +18,7 @@ func main() {
 		p_filesystem.GetPlugin(),
 		p_users.GetPlugin(),
 		p_website.GetPlugin(),
+		p_no_signup.GetPlugin(),
 	}
 
 	config, err := lariv.LoadConfigFromFile("config.toml", plugins)
