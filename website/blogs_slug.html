@@ -104,12 +104,12 @@
 	<div class="article-container">
 		{{ if $blog.description }}
 		<div class="article-lead">
-			{{ markdown $blog.description }}
+			{{ markdown_unsafe $blog.description }}
 		</div>
 		{{ end }}
 
 		<article class="article-body">
-			{{ markdown $blog.content }}
+			{{ markdown_unsafe $blog.content }}
 		</article>
 
 		<div class="article-footer-nav">
