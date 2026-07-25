@@ -1,0 +1,1305 @@
+{{ template "header" . }}
+
+<style>
+	/* HERO SECTION */
+	.hero-grid {
+		display: flex;
+		justify-content: space-around;
+		gap: 4rem;
+		align-items: center;
+		width: 100%;
+		max-width: 100%;
+	}
+
+	.hero-content h1 {
+		font-size: 4rem;
+		line-height: 1.1;
+		margin-bottom: 1.5rem;
+	}
+
+	.hero-content p {
+		font-size: 1.2rem;
+		line-height: 1.7;
+		margin-bottom: 2.5rem;
+		max-width: 580px;
+	}
+
+	.hero-actions {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 1rem;
+		margin-bottom: 3.5rem;
+	}
+
+	.hero-content {
+		min-width: 0;
+		overflow-wrap: break-word;
+	}
+
+	.hero-stats {
+		display: grid;
+		grid-template-columns: repeat(3, 1fr);
+		gap: 1.5rem;
+		border-top: 1px solid var(--border-muted);
+		padding-top: 2rem;
+	}
+
+	.stat-card h3 {
+		font-size: 1.8rem;
+		color: var(--text-main);
+		margin-bottom: 0.25rem;
+	}
+
+	.stat-card h3 span {
+		background: linear-gradient(135deg, var(--color-primary), var(--color-accent));
+		background-clip: text;
+		color: transparent;
+	}
+
+	.stat-card p {
+		font-size: 0.85rem;
+		text-transform: uppercase;
+		letter-spacing: 0.05em;
+		color: var(--text-dark);
+		font-weight: 600;
+	}
+
+	/* HERO VISUAL FRAME */
+	.hero-visual {
+		position: relative;
+		display: flex;
+		justify-content: center;
+		align-items: center;
+	}
+
+	.hero-visual-frame {
+		width: 100%;
+		background: #fafafa;
+		border: 1px solid rgba(0, 0, 0, 0.08);
+		border-radius: 12px;
+		padding: 1.25rem;
+		backdrop-filter: blur(12px);
+		box-shadow: 0 20px 40px -10px rgba(0, 0, 0, 0.08);
+		position: relative;
+	}
+
+	.hero-visual-frame::before {
+		content: '';
+		position: absolute;
+		inset: 0;
+		border-radius: 12px;
+		padding: 1px;
+		background: linear-gradient(135deg, rgba(0, 0, 0, 0.05), rgba(0, 0, 0, 0.01) 50%, rgba(79, 70, 229, 0.08) 100%);
+		mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+		mask-composite: exclude;
+		pointer-events: none;
+	}
+
+	/* SECTIONS & GRIDS */
+	.pillars-grid {
+		display: grid;
+		grid-template-columns: repeat(3, 1fr);
+		gap: 2rem;
+	}
+
+	.modules-grid {
+		display: grid;
+		grid-template-columns: repeat(4, 1fr);
+		gap: 1.25rem;
+	}
+
+	/* BENCHMARKS & PERFORMANCE SHOWCASE */
+	.perf-slider-group {
+		overflow: visible;
+		display: flex;
+		flex-direction: column;
+		gap: 0.4rem;
+		min-width: 220px;
+	}
+
+	.perf-slider-label {
+		font-size: 0.85rem;
+		font-weight: 600;
+		color: var(--text-main);
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
+	}
+
+	.perf-slider-label span {
+		font-family: var(--font-code);
+		color: var(--color-primary);
+		font-weight: 700;
+	}
+
+	.perf-slider {
+		appearance: none;
+		width: 100%;
+		height: 6px;
+		border-radius: 4px;
+		background: rgba(0, 0, 0, 0.1);
+		outline: none;
+		transition: var(--transition-smooth);
+		cursor: pointer;
+	}
+
+	.perf-controls {
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
+		flex-wrap: wrap;
+		gap: 1rem;
+		margin-bottom: 2.5rem;
+	}
+
+	.perf-category-group,
+	.perf-worker-group {
+		display: flex;
+		gap: 0.5rem;
+		overflow: visible;
+	}
+
+	#perf-stage-controls {
+		display: flex;
+		flex-direction: column;
+		gap: 0.75rem;
+		margin-top: -1.5rem;
+		margin-bottom: 1.5rem;
+	}
+
+	.perf-stage-row {
+		display: flex;
+		align-items: center;
+		gap: 0.75rem;
+		flex-wrap: wrap;
+	}
+
+	.perf-stage-label {
+		font-size: 0.8rem;
+		font-weight: 600;
+		color: var(--text-dark);
+		text-transform: uppercase;
+		letter-spacing: 0.05em;
+	}
+
+	.perf-stage-btns {
+		display: flex;
+		gap: 0.4rem;
+	}
+
+	.perf-tab {
+		background: rgba(0, 0, 0, 0.02);
+		border: 1px solid var(--border-muted);
+		color: var(--text-muted);
+		padding: 0.5rem 1.25rem;
+		border-radius: 6px;
+		font-family: var(--font-body);
+		font-size: 0.9rem;
+		font-weight: 600;
+		cursor: pointer;
+		transition: var(--transition-smooth);
+	}
+
+	.perf-tab:hover {
+		color: var(--text-main);
+		background: rgba(0, 0, 0, 0.05);
+	}
+
+	.perf-tab.active {
+		background: var(--color-primary);
+		color: #ffffff;
+		border-color: var(--color-primary);
+		box-shadow: 0 4px 12px var(--color-primary-glow);
+	}
+
+	.perf-cat-tab {
+		background: rgba(79, 70, 229, 0.04);
+		border: 1px solid rgba(79, 70, 229, 0.15);
+		color: var(--text-dark);
+		padding: 0.35rem 0.95rem;
+		border-radius: 9999px;
+		font-family: var(--font-body);
+		font-size: 0.8rem;
+		font-weight: 600;
+		letter-spacing: 0.03em;
+		cursor: pointer;
+		transition: var(--transition-smooth);
+		margin: 0;
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+	}
+
+	.perf-cat-tab:hover {
+		color: var(--color-primary);
+		background: rgba(79, 70, 229, 0.08);
+		border-color: rgba(79, 70, 229, 0.25);
+	}
+
+	.perf-cat-tab.active {
+		background: linear-gradient(135deg, var(--color-accent), #0f766e);
+		color: #ffffff;
+		border-color: var(--color-accent);
+		box-shadow: 0 4px 12px var(--color-accent-glow);
+	}
+
+	.perf-stage-tab {
+		background: rgba(0, 0, 0, 0.02);
+		border: 1px dashed var(--border-muted);
+		color: var(--text-muted);
+		padding: 0.35rem 0.9rem;
+		border-radius: 6px;
+		font-family: var(--font-body);
+		font-size: 0.82rem;
+		font-weight: 500;
+		cursor: pointer;
+		transition: var(--transition-smooth);
+		text-transform: capitalize;
+	}
+
+	.perf-stage-tab:hover {
+		color: var(--text-main);
+		background: rgba(0, 0, 0, 0.05);
+	}
+
+	.perf-stage-tab.active {
+		background: rgba(13, 148, 136, 0.1);
+		color: var(--color-accent);
+		border-style: solid;
+		border-color: var(--color-accent);
+		font-weight: 600;
+	}
+
+	.bars-container {
+		display: flex;
+		flex-direction: column;
+		gap: 1.25rem;
+	}
+
+	.bar-item {
+		display: flex;
+		flex-direction: column;
+		gap: 0.4rem;
+	}
+
+	.bar-header {
+		display: flex;
+		justify-content: space-between;
+		font-size: 0.88rem;
+		font-weight: 600;
+	}
+
+	.bar-track {
+		height: 1.5rem;
+		background: rgba(0, 0, 0, 0.04);
+		border-radius: 6px;
+		overflow: hidden;
+		position: relative;
+	}
+
+	.bar-fill {
+		height: 100%;
+		border-radius: 6px;
+		transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+	}
+
+	.bar-fill-lariv {
+		background: linear-gradient(90deg, #4f46e5, #0d9488);
+	}
+
+	.bar-fill-other {
+		background: linear-gradient(90deg, #94a3b8, #cbd5e1);
+	}
+
+	/* CTA BANNER */
+	.cta-banner {
+		background: radial-gradient(circle at top right, rgba(79, 70, 229, 0.05), transparent 60%),
+			radial-gradient(circle at bottom left, rgba(13, 148, 136, 0.04), transparent 60%),
+			#ffffff;
+		border: 1px solid var(--border-muted);
+		border-radius: 20px;
+		padding: 4rem;
+		text-align: center;
+		backdrop-filter: blur(12px);
+		box-shadow: 0 20px 40px -10px rgba(0, 0, 0, 0.05);
+		position: relative;
+		overflow: hidden;
+	}
+
+	.cta-banner::after {
+		content: '';
+		position: absolute;
+		inset: 0;
+		border-radius: 20px;
+		padding: 1px;
+		background: linear-gradient(135deg, rgba(0, 0, 0, 0.05), rgba(0, 0, 0, 0.01) 50%, rgba(13, 148, 136, 0.08) 100%);
+		mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+		mask-composite: exclude;
+		pointer-events: none;
+	}
+
+	.cta-banner h2 {
+		font-size: 3rem;
+		margin-bottom: 1rem;
+	}
+
+	.cta-banner p {
+		max-width: 550px;
+		margin: 0 auto 2.5rem auto;
+		font-size: 1.1rem;
+	}
+
+	.newsletter-form {
+		display: flex;
+		max-width: 500px;
+		margin: 0 auto;
+		gap: 0.75rem;
+		position: relative;
+	}
+
+	.newsletter-input {
+		flex: 1;
+		background: #ffffff;
+		border: 1px solid rgba(0, 0, 0, 0.1);
+		padding: 0.85rem 1.25rem;
+		border-radius: 8px;
+		color: #0f172a;
+		font-family: var(--font-body);
+		font-size: 0.95rem;
+		transition: var(--transition-smooth);
+	}
+
+	.newsletter-input:focus {
+		outline: none;
+		border-color: var(--color-accent);
+		box-shadow: 0 0 10px rgba(13, 148, 136, 0.1);
+	}
+
+	.form-success-msg {
+		display: none;
+		color: var(--color-accent);
+		font-weight: 600;
+		margin-top: 1rem;
+		font-size: 0.95rem;
+		animation: fadeIn 0.4s ease forwards;
+	}
+
+	@keyframes fadeIn {
+		from {
+			opacity: 0;
+			transform: translateY(5px);
+		}
+
+		to {
+			opacity: 1;
+			transform: translateY(0);
+		}
+	}
+
+	/* RESPONSIVE BREAKPOINTS (LANDING PAGE) */
+	@media (max-width: 992px) {
+		.hero-grid {
+			grid-template-columns: 1fr;
+			gap: 3rem;
+			text-align: center;
+		}
+
+		.hero-content p {
+			margin-left: auto;
+			margin-right: auto;
+		}
+
+		.hero-actions {
+			justify-content: center;
+		}
+
+		.hero-stats {
+			max-width: 500px;
+			margin: 0 auto;
+		}
+
+		.pillars-grid {
+			grid-template-columns: 1fr;
+			max-width: 550px;
+			margin: 0 auto;
+		}
+
+		.modules-grid {
+			grid-template-columns: repeat(3, 1fr);
+		}
+	}
+
+	@media (max-width: 768px) {
+		.hero-visual {
+			display: none;
+		}
+
+		.hero-content h1 {
+			font-size: clamp(2rem, 8vw, 2.8rem);
+		}
+
+		.hero-actions {
+			justify-content: center;
+		}
+
+		.hero-actions .btn {
+			flex: 1 1 auto;
+			min-width: min(100%, 10rem);
+		}
+
+		.section-header h2 {
+			font-size: 2.2rem;
+		}
+
+		.cta-banner {
+			padding: 2.5rem 1.5rem;
+		}
+
+		.cta-banner h2 {
+			font-size: 2.2rem;
+		}
+
+		.modules-grid {
+			grid-template-columns: repeat(2, 1fr);
+		}
+
+		.perf-controls {
+			flex-direction: column;
+			align-items: center;
+			gap: 1rem;
+		}
+
+		.perf-category-group {
+			display: flex;
+			flex-direction: row;
+			flex-wrap: wrap;
+			justify-content: center;
+			align-items: center;
+			width: auto;
+			gap: 0.5rem;
+		}
+
+		.perf-worker-group {
+			width: 100%;
+		}
+
+		#perf-stage-controls {
+			flex-direction: column;
+			align-items: stretch;
+			width: 100%;
+			margin-top: 0;
+			gap: 0.75rem;
+		}
+
+		.perf-stage-row {
+			flex-direction: column;
+			align-items: stretch;
+			width: 100%;
+			gap: 0.4rem;
+		}
+
+		.perf-stage-btns {
+			flex-direction: column;
+			width: 100%;
+			gap: 0.5rem;
+		}
+
+		.perf-cat-tab {
+			width: auto;
+			flex-shrink: 0;
+			white-space: nowrap;
+		}
+
+		.perf-tab,
+		.perf-stage-tab {
+			width: 100%;
+			text-align: center;
+		}
+
+		.newsletter-form {
+			flex-direction: column;
+		}
+	}
+</style>
+
+<!-- HERO SECTION -->
+<section class="hero">
+	<div class="container hero-grid">
+		<div class="hero-content">
+			<span class="badge">Framework Unstable</span>
+			<h1>One Platform, <span class="gradient-text">Every App</span></h1>
+			<p>A truly open framework to replace every third-party SaaS tool you run today.</p>
+			<div class="hero-actions">
+				<a href="https://pkg.go.dev/github.com/lariv-in/lariv/docs/quickstart" class="btn btn-primary"
+					target="_blank">Get Started</a>
+				<a href="/pricing" class="btn btn-secondary">Host with Us</a>
+				<a href="https://github.com/lariv-in/lariv" class="btn btn-secondary" target="_blank">
+					<svg style="margin-right: 0.5rem; vertical-align: middle; fill: currentColor;" width="20"
+						height="20" viewBox="0 0 24 24">
+						<path
+							d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z" />
+					</svg>
+					GitHub
+				</a>
+			</div>
+		</div>
+
+		<div class="hero-visual">
+			<img src="/static/main-artwork.svg" alt="Lariv Main Artwork"
+				style="width: 100%; max-width: 400px; height: auto;">
+		</div>
+	</div>
+</section>
+
+<!-- UPCOMING MODULES SECTION -->
+<section id="modules" class="section-padding"
+	style="background: rgba(248, 250, 252, 0.5); border-top: 1px solid var(--border-muted); border-bottom: 1px solid var(--border-muted);">
+	<div class="container">
+		<div class="section-header">
+			<span class="badge">Ecosystem Roadmap</span>
+			<h2>Turn-Key Domain Modules</h2>
+			<p>Activate pre-built, open-source application plugins with a single configuration. Replace proprietary SaaS
+				subscriptions under one unified platform.</p>
+		</div>
+
+		<div class="modules-grid">
+			<!-- Website -->
+			<div class="card"
+				style="padding: 1.5rem 1rem; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; gap: 0.75rem;">
+				<div class="card-icon" style="margin-bottom: 0;">
+					<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+						<circle cx="12" cy="12" r="10"></circle>
+						<line x1="2" y1="12" x2="22" y2="12"></line>
+						<path
+							d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z">
+						</path>
+					</svg>
+				</div>
+				<h3 style="font-size: 1.05rem; margin: 0;">Website</h3>
+			</div>
+
+			<!-- Blog -->
+			<div class="card"
+				style="padding: 1.5rem 1rem; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; gap: 0.75rem;">
+				<div class="card-icon" style="margin-bottom: 0;">
+					<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+						<path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
+						<path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
+					</svg>
+				</div>
+				<h3 style="font-size: 1.05rem; margin: 0;">Blog</h3>
+			</div>
+
+			<!-- CRM -->
+			<div class="card"
+				style="padding: 1.5rem 1rem; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; gap: 0.75rem;">
+				<div class="card-icon" style="margin-bottom: 0;">
+					<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+						<path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+						<circle cx="9" cy="7" r="4"></circle>
+						<path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+						<path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+					</svg>
+				</div>
+				<h3 style="font-size: 1.05rem; margin: 0;">CRM</h3>
+			</div>
+
+			<!-- Forum -->
+			<div class="card"
+				style="padding: 1.5rem 1rem; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; gap: 0.75rem;">
+				<div class="card-icon" style="margin-bottom: 0;">
+					<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+						<path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+					</svg>
+				</div>
+				<h3 style="font-size: 1.05rem; margin: 0;">Forum</h3>
+			</div>
+
+			<!-- Invoices -->
+			<div class="card"
+				style="padding: 1.5rem 1rem; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; gap: 0.75rem;">
+				<div class="card-icon" style="margin-bottom: 0;">
+					<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+						<path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+						<polyline points="14 2 14 8 20 8"></polyline>
+						<line x1="16" y1="13" x2="8" y2="13"></line>
+						<line x1="16" y1="17" x2="8" y2="17"></line>
+						<polyline points="10 9 9 9 8 9"></polyline>
+					</svg>
+				</div>
+				<h3 style="font-size: 1.05rem; margin: 0;">Invoices</h3>
+			</div>
+
+			<!-- Accounting -->
+			<div class="card"
+				style="padding: 1.5rem 1rem; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; gap: 0.75rem;">
+				<div class="card-icon" style="margin-bottom: 0;">
+					<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+						<rect x="4" y="2" width="16" height="20" rx="2"></rect>
+						<line x1="8" y1="6" x2="16" y2="6"></line>
+						<line x1="16" y1="14" x2="16" y2="18"></line>
+						<path d="M16 10h.01"></path>
+						<path d="M12 10h.01"></path>
+						<path d="M8 10h.01"></path>
+						<path d="M12 14h.01"></path>
+						<path d="M8 14h.01"></path>
+						<path d="M12 18h.01"></path>
+						<path d="M8 18h.01"></path>
+					</svg>
+				</div>
+				<h3 style="font-size: 1.05rem; margin: 0;">Accounting</h3>
+			</div>
+
+			<!-- Planning -->
+			<div class="card"
+				style="padding: 1.5rem 1rem; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; gap: 0.75rem;">
+				<div class="card-icon" style="margin-bottom: 0;">
+					<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+						<rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+						<line x1="16" y1="2" x2="16" y2="6"></line>
+						<line x1="8" y1="2" x2="8" y2="6"></line>
+						<line x1="3" y1="10" x2="21" y2="10"></line>
+						<path d="M8 14h4"></path>
+						<path d="M8 18h7"></path>
+					</svg>
+				</div>
+				<h3 style="font-size: 1.05rem; margin: 0;">Planning</h3>
+			</div>
+
+			<!-- Inventory -->
+			<div class="card"
+				style="padding: 1.5rem 1rem; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; gap: 0.75rem;">
+				<div class="card-icon" style="margin-bottom: 0;">
+					<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+						<path
+							d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z">
+						</path>
+						<polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline>
+						<line x1="12" y1="22.08" x2="12" y2="12"></line>
+					</svg>
+				</div>
+				<h3 style="font-size: 1.05rem; margin: 0;">Inventory</h3>
+			</div>
+
+			<!-- Employees -->
+			<div class="card"
+				style="padding: 1.5rem 1rem; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; gap: 0.75rem;">
+				<div class="card-icon" style="margin-bottom: 0;">
+					<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+						<path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path>
+						<circle cx="9" cy="7" r="4"></circle>
+						<path d="M22 21v-2a4 4 0 0 0-3-3.87"></path>
+						<path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+					</svg>
+				</div>
+				<h3 style="font-size: 1.05rem; margin: 0;">Employees</h3>
+			</div>
+
+			<!-- Ecommerce -->
+			<div class="card"
+				style="padding: 1.5rem 1rem; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; gap: 0.75rem;">
+				<div class="card-icon" style="margin-bottom: 0;">
+					<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+						<circle cx="9" cy="21" r="1"></circle>
+						<circle cx="20" cy="21" r="1"></circle>
+						<path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
+					</svg>
+				</div>
+				<h3 style="font-size: 1.05rem; margin: 0;">Ecommerce</h3>
+			</div>
+
+			<!-- Chat -->
+			<div class="card"
+				style="padding: 1.5rem 1rem; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; gap: 0.75rem;">
+				<div class="card-icon" style="margin-bottom: 0;">
+					<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+						<path
+							d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z">
+						</path>
+					</svg>
+				</div>
+				<h3 style="font-size: 1.05rem; margin: 0;">Chat</h3>
+			</div>
+
+			<!-- Timesheet -->
+			<div class="card"
+				style="padding: 1.5rem 1rem; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; gap: 0.75rem;">
+				<div class="card-icon" style="margin-bottom: 0;">
+					<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+						<circle cx="12" cy="12" r="10"></circle>
+						<polyline points="12 6 12 12 16 14"></polyline>
+					</svg>
+				</div>
+				<h3 style="font-size: 1.05rem; margin: 0;">Timesheet</h3>
+			</div>
+		</div>
+	</div>
+</section>
+
+<!-- MODULARITY SECTION -->
+<section id="modularity" class="section-padding">
+	<div class="container">
+		<div class="section-header">
+			<span class="badge">SaaS Consolidation</span>
+			<h2>One Open Platform to Replace Every SaaS</h2>
+			<p>Why rent your core business software when you can own it? Lariv empowers you to run, extend, and
+				consolidate all your internal SaaS tools in one sovereign environment—self-hosted or fully managed by
+				us.</p>
+		</div>
+
+		<div class="pillars-grid">
+			<div class="card">
+				<div class="card-icon">
+					<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+						<polygon points="12 2 2 7 12 12 22 7 12 2"></polygon>
+						<polyline points="2 17 12 22 22 17"></polyline>
+						<polyline points="2 12 12 17 22 12"></polyline>
+					</svg>
+				</div>
+				<h3>One Stack, Unlimited Apps</h3>
+				<p>Consolidate CRM, Auth, CMS, and internal tools into a single deployment. Zero per-user seat fees,
+					total data ownership, and sub-millisecond performance.</p>
+			</div>
+
+			<div class="card">
+				<div class="card-icon">
+					<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+						<rect x="3" y="3" width="7" height="7"></rect>
+						<rect x="14" y="3" width="7" height="7"></rect>
+						<rect x="14" y="14" width="7" height="7"></rect>
+						<rect x="3" y="14" width="7" height="7"></rect>
+					</svg>
+				</div>
+				<h3>Modular SaaS Building Blocks</h3>
+				<p>Package domain apps into self-contained plugins. Turn on authentication, filesystem handling, or
+					custom business dashboards with a single turn-key setup.</p>
+			</div>
+
+			<div class="card">
+				<div class="card-icon">
+					<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+						<path d="M18 10h-1.26A8 8 0 1 0 9 20h9a5 5 0 0 0 0-10z"></path>
+					</svg>
+				</div>
+				<h3>Self-Hosted or Fully Managed</h3>
+				<p>Deploy on your own servers for 100% data sovereignty and compliance, or let us host and manage your
+					instance with enterprise reliability and zero maintenance overhead.</p>
+			</div>
+		</div>
+	</div>
+</section>
+
+<!-- PERFORMANCE SECTION -->
+<section id="performance" class="section-padding"
+	style="background: #f8fafc; border-top: 1px solid var(--border-muted); border-bottom: 1px solid var(--border-muted);">
+	<div class="container">
+		<div class="section-header">
+			<span class="badge">Speed & Efficiency</span>
+			<h2>Performance Benchmarks</h2>
+			<p>Real-world benchmark comparisons based on common use cases.</p>
+		</div>
+
+		<div class="perf-controls">
+			<div class="perf-category-group">
+				<button class="badge perf-cat-tab active" onclick="filterPerfCategory('crud')">CRUD</button>
+				<button class="badge perf-cat-tab" onclick="filterPerfCategory('task')">AI Benchmarks</button>
+				<button class="badge perf-cat-tab" onclick="filterPerfCategory('counter')">Counter</button>
+				<button class="badge perf-cat-tab" onclick="filterPerfCategory('websockets')">Websockets</button>
+			</div>
+			<div class="perf-worker-group perf-slider-group">
+				<label for="worker-slider" class="perf-slider-label">Concurrency: <span id="worker-count-label">1 Worker</span></label>
+				<input type="range" id="worker-slider" min="0" max="2" value="0" step="1" oninput="onWorkerSliderChange(this.value)" class="perf-slider">
+			</div>
+		</div>
+
+		<div id="perf-stage-controls" style="display: none;">
+			<!-- Dynamically populated when category has stages -->
+		</div>
+
+		<div id="perf-category-desc"
+			style="text-align: center; max-width: 800px; margin: 0 auto 2rem auto; font-size: 0.82rem; color: var(--text-dark); background: rgba(79, 70, 229, 0.03); padding: 0.45rem 1rem; border-radius: 6px; border: 1px solid rgba(79, 70, 229, 0.08);">
+			<!-- Dynamically updated description per benchmark category -->
+		</div>
+
+		<div class="perf-grid"
+			style="display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr)); gap: 1rem;">
+			<!-- RPS Chart -->
+			<div class="card" style="padding: 1rem;">
+				<h3
+					style="font-size: 1.3rem; margin-bottom: 1.5rem; display: flex; justify-content: space-between; align-items: center;">
+					<span>Requests Per Second (RPS)</span>
+					<span style="font-size: 0.8rem; font-weight: 500; color: var(--text-dark);">Higher is
+						better</span>
+				</h3>
+				<div id="rps-bars-container" class="bars-container">
+					<!-- Dynamic JS render -->
+				</div>
+			</div>
+
+			<!-- Latency Chart -->
+			<div class="card" style="padding: 1rem;">
+				<h3
+					style="font-size: 1.3rem; margin-bottom: 1.5rem; display: flex; justify-content: space-between; align-items: center;">
+					<span>Average Latency (ms)</span>
+					<span style="font-size: 0.8rem; font-weight: 500; color: var(--text-dark);">Lower is
+						better</span>
+				</h3>
+				<div id="latency-bars-container" class="bars-container">
+					<!-- Dynamic JS render -->
+				</div>
+			</div>
+		</div>
+
+		<div
+			style="text-align: center; margin-top: 2rem; display: flex; justify-content: center; gap: 1.5rem; flex-wrap: wrap;">
+			<a href="https://github.com/UniquityVentures/benchmarks/blob/main/benchmark_metrics.json" target="_blank"
+				style="font-size: 0.85rem; color: var(--text-dark); text-decoration: none;">Data
+				sourced from GitHub: UniquityVentures/benchmarks ↗</a>
+			<a href="https://github.com/UniquityVentures/benchmarks/blob/main/README.md" target="_blank"
+				style="font-size: 0.85rem; color: var(--text-dark); text-decoration: none;">Benchmark
+				Methodology & README ↗</a>
+		</div>
+	</div>
+</section>
+
+<!-- LEARN MORE SECTION -->
+<section id="learn-more" class="section-padding">
+	<div class="container">
+		<div class="section-header">
+			<span class="badge">Documentation & Guides</span>
+			<h2>Explore Lariv Documentation</h2>
+			<p>Deep dive into Lariv's core architecture, developer guides, and official bundled plugins.</p>
+		</div>
+
+		<!-- Category 1: Core Framework Guides -->
+		<div style="margin-bottom: 3rem;">
+			<h3
+				style="font-size: 1.1rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--color-primary); font-weight: 700; margin-bottom: 1.25rem; display: flex; align-items: center; gap: 0.5rem;">
+				<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+					<path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
+					<path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
+				</svg>
+				Core Framework Guides
+			</h3>
+
+			<div
+				style="display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr)); gap: 1.25rem;">
+				<a href="https://pkg.go.dev/github.com/lariv-in/lariv/docs/quickstart" target="_blank" class="card"
+					style="padding: 1.5rem; text-decoration: none; color: inherit; display: block;">
+					<div
+						style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.75rem;">
+						<h4 style="font-size: 1.1rem; color: var(--text-main); margin: 0;">Quickstart Guide</h4>
+						<span style="color: var(--color-primary); font-weight: 600; font-size: 1.1rem;">↗</span>
+					</div>
+					<p style="font-size: 0.88rem; color: var(--text-dark); margin: 0;">Get up and running with a
+						single-binary Lariv server in under 5 minutes.</p>
+				</a>
+
+				<a href="https://pkg.go.dev/github.com/lariv-in/lariv/docs/architecture" target="_blank" class="card"
+					style="padding: 1.5rem; text-decoration: none; color: inherit; display: block;">
+					<div
+						style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.75rem;">
+						<h4 style="font-size: 1.1rem; color: var(--text-main); margin: 0;">Architecture Overview
+						</h4>
+						<span style="color: var(--color-primary); font-weight: 600; font-size: 1.1rem;">↗</span>
+					</div>
+					<p style="font-size: 0.88rem; color: var(--text-dark); margin: 0;">Learn how the kernel
+						bootloader, database ORM, and central registry interact.</p>
+				</a>
+
+				<a href="https://pkg.go.dev/github.com/lariv-in/lariv/docs/plugins" target="_blank" class="card"
+					style="padding: 1.5rem; text-decoration: none; color: inherit; display: block;">
+					<div
+						style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.75rem;">
+						<h4 style="font-size: 1.1rem; color: var(--text-main); margin: 0;">Patch Keys &
+							Overrides</h4>
+						<span style="color: var(--color-primary); font-weight: 600; font-size: 1.1rem;">↗</span>
+					</div>
+					<p style="font-size: 0.88rem; color: var(--text-dark); margin: 0;">Dynamically patch routes,
+						views, and schemas without altering core plugin code.</p>
+				</a>
+
+				<a href="https://pkg.go.dev/github.com/lariv-in/lariv/docs/database" target="_blank" class="card"
+					style="padding: 1.5rem; text-decoration: none; color: inherit; display: block;">
+					<div
+						style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.75rem;">
+						<h4 style="font-size: 1.1rem; color: var(--text-main); margin: 0;">Transactional Views
+						</h4>
+						<span style="color: var(--color-primary); font-weight: 600; font-size: 1.1rem;">↗</span>
+					</div>
+					<p style="font-size: 0.88rem; color: var(--text-dark); margin: 0;">Understand automatic
+						database transaction management and safety guarantees.</p>
+				</a>
+			</div>
+		</div>
+
+		<!-- Category 2: Bundled Plugin Docs -->
+		<div>
+			<h3
+				style="font-size: 1.1rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--color-primary); font-weight: 700; margin-bottom: 1.25rem; display: flex; align-items: center; gap: 0.5rem;">
+				<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+					<rect x="2" y="2" width="20" height="8" rx="2" ry="2"></rect>
+					<rect x="2" y="14" width="20" height="8" rx="2" ry="2"></rect>
+					<line x1="6" y1="6" x2="6.01" y2="6"></line>
+					<line x1="6" y1="18" x2="6.01" y2="18"></line>
+				</svg>
+				Bundled Plugin Docs
+			</h3>
+
+			<div
+				style="display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 250px), 1fr)); gap: 1.25rem;">
+				<a href="https://pkg.go.dev/github.com/lariv-in/lariv/plugins/p_users" target="_blank" class="card"
+					style="padding: 1.5rem; text-decoration: none; color: inherit; display: block;">
+					<div
+						style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+						<h4
+							style="font-size: 1.05rem; color: var(--text-main); font-family: var(--font-code); margin: 0;">
+							Users</h4>
+						<span style="color: var(--color-primary); font-size: 0.9rem;">↗</span>
+					</div>
+					<p style="font-size: 0.85rem; color: var(--text-dark); margin: 0;">User authentication,
+						sessions, role management, and profile models.</p>
+				</a>
+
+				<a href="https://pkg.go.dev/github.com/lariv-in/lariv/plugins/p_website" target="_blank" class="card"
+					style="padding: 1.5rem; text-decoration: none; color: inherit; display: block;">
+					<div
+						style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+						<h4
+							style="font-size: 1.05rem; color: var(--text-main); font-family: var(--font-code); margin: 0;">
+							Website</h4>
+						<span style="color: var(--color-primary); font-size: 0.9rem;">↗</span>
+					</div>
+					<p style="font-size: 0.85rem; color: var(--text-dark); margin: 0;">Dynamic page rendering,
+						URL routing rules, and HTML template pipelines.</p>
+				</a>
+
+				<a href="https://pkg.go.dev/github.com/lariv-in/lariv/plugins/p_filesystem" target="_blank" class="card"
+					style="padding: 1.5rem; text-decoration: none; color: inherit; display: block;">
+					<div
+						style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+						<h4
+							style="font-size: 1.05rem; color: var(--text-main); font-family: var(--font-code); margin: 0;">
+							Filesystem</h4>
+						<span style="color: var(--color-primary); font-size: 0.9rem;">↗</span>
+					</div>
+					<p style="font-size: 0.85rem; color: var(--text-dark); margin: 0;">Unified file uploads,
+						media storage drivers, and asset management.</p>
+				</a>
+
+				<a href="https://pkg.go.dev/github.com/lariv-in/lariv/plugins/p_dashboard" target="_blank" class="card"
+					style="padding: 1.5rem; text-decoration: none; color: inherit; display: block;">
+					<div
+						style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+						<h4
+							style="font-size: 1.05rem; color: var(--text-main); font-family: var(--font-code); margin: 0;">
+							Dashboard</h4>
+						<span style="color: var(--color-primary); font-size: 0.9rem;">↗</span>
+					</div>
+					<p style="font-size: 0.85rem; color: var(--text-dark); margin: 0;">Admin control panel,
+						system metrics, and operational dashboards.</p>
+				</a>
+
+				<a href="https://pkg.go.dev/github.com/lariv-in/lariv/plugins/p_llm_assistant" target="_blank"
+					class="card" style="padding: 1.5rem; text-decoration: none; color: inherit; display: block;">
+					<div
+						style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+						<h4
+							style="font-size: 1.05rem; color: var(--text-main); font-family: var(--font-code); margin: 0;">
+							LLM Assistant</h4>
+						<span style="color: var(--color-primary); font-size: 0.9rem;">↗</span>
+					</div>
+					<p style="font-size: 0.85rem; color: var(--text-dark); margin: 0;">AI assistant
+						integrations, chat completions, and prompt workflows.</p>
+				</a>
+
+				<a href="https://pkg.go.dev/github.com/lariv-in/lariv/plugins/p_otp" target="_blank" class="card"
+					style="padding: 1.5rem; text-decoration: none; color: inherit; display: block;">
+					<div
+						style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+						<h4
+							style="font-size: 1.05rem; color: var(--text-main); font-family: var(--font-code); margin: 0;">
+							OTP</h4>
+						<span style="color: var(--color-primary); font-size: 0.9rem;">↗</span>
+					</div>
+					<p style="font-size: 0.85rem; color: var(--text-dark); margin: 0;">Two-factor
+						authentication, timed OTP generation, and verification.</p>
+				</a>
+			</div>
+		</div>
+	</div>
+</section>
+
+<!-- CTA BANNER -->
+<section class="container section-padding">
+	<div class="cta-banner">
+		<h2>Build Better, Faster</h2>
+		<p>Start composing your next enterprise system with Lariv. Completely open and fully extensible.</p>
+		<div style="display: flex; gap: 1rem; justify-content: center; margin-top: 2rem; flex-wrap: wrap;">
+			<a href="https://pkg.go.dev/github.com/lariv-in/lariv/docs/quickstart" class="btn btn-primary"
+				target="_blank">Quickstart Guide</a>
+			<a href="/pricing" class="btn btn-secondary">Host with Us</a>
+			<a href="https://github.com/lariv-in/lariv" class="btn btn-secondary" target="_blank">View on
+				GitHub</a>
+		</div>
+	</div>
+</section>
+
+<!-- BENCHMARK METRICS SCRIPT -->
+<script>
+	let rawBenchmarkData = null;
+	let currentCategoryFilter = 'crud';
+	let currentWorkerFilter = 1;
+	let wsReqFilter = 'small';
+	let wsRespFilter = 'small';
+
+	async function fetchBenchmarkMetrics() {
+		try {
+			const apiRes = await fetch('https://api.github.com/repos/UniquityVentures/benchmarks/contents/benchmark_metrics.json');
+			if (apiRes.ok) {
+				const fileMeta = await apiRes.json();
+				if (fileMeta.content) {
+					const decodedStr = atob(fileMeta.content.replace(/\s/g, ''));
+					rawBenchmarkData = JSON.parse(decodedStr);
+				} else if (fileMeta.download_url) {
+					const rawRes = await fetch(fileMeta.download_url);
+					rawBenchmarkData = await rawRes.json();
+				}
+			} else {
+				const rawRes = await fetch('https://raw.githubusercontent.com/UniquityVentures/benchmarks/main/benchmark_metrics.json');
+				if (rawRes.ok) {
+					rawBenchmarkData = await rawRes.json();
+				}
+			}
+		} catch (err) {
+			console.warn('Unable to fetch benchmark results, failed with error: ', err);
+		}
+
+		renderPerfCharts();
+	}
+
+	function filterPerfCategory(category) {
+		currentCategoryFilter = category;
+		document.querySelectorAll('.perf-cat-tab').forEach(btn => {
+			if (btn.getAttribute('onclick').includes(`'${category}'`)) {
+				btn.classList.add('active');
+			} else {
+				btn.classList.remove('active');
+			}
+		});
+		renderPerfCharts();
+	}
+
+	const workerSteps = [1, 50, 500];
+	const sizeSteps = ['small', 'medium', 'large'];
+
+	function onWorkerSliderChange(valIndex) {
+		const workers = workerSteps[parseInt(valIndex)] || 1;
+		currentWorkerFilter = workers;
+		const label = document.getElementById('worker-count-label');
+		if (label) label.textContent = `${workers} ${workers === 1 ? 'Worker' : 'Workers'}`;
+		renderPerfCharts();
+	}
+
+	function filterPerfWorker(workers) {
+		currentWorkerFilter = workers;
+		const idx = workerSteps.indexOf(workers);
+		const slider = document.getElementById('worker-slider');
+		if (slider && idx !== -1) slider.value = idx;
+		const label = document.getElementById('worker-count-label');
+		if (label) label.textContent = `${workers} ${workers === 1 ? 'Worker' : 'Workers'}`;
+		renderPerfCharts();
+	}
+
+	function onWsReqSliderChange(valIndex) {
+		const size = sizeSteps[parseInt(valIndex)] || 'small';
+		wsReqFilter = size;
+		const label = document.getElementById('ws-req-label');
+		if (label) label.textContent = size.charAt(0).toUpperCase() + size.slice(1);
+		renderPerfCharts();
+	}
+
+	function onWsRespSliderChange(valIndex) {
+		const size = sizeSteps[parseInt(valIndex)] || 'small';
+		wsRespFilter = size;
+		const label = document.getElementById('ws-resp-label');
+		if (label) label.textContent = size.charAt(0).toUpperCase() + size.slice(1);
+		renderPerfCharts();
+	}
+
+	function filterWsReq(size) {
+		wsReqFilter = size;
+		const idx = sizeSteps.indexOf(size);
+		const slider = document.getElementById('ws-req-slider');
+		if (slider && idx !== -1) slider.value = idx;
+		const label = document.getElementById('ws-req-label');
+		if (label) label.textContent = size.charAt(0).toUpperCase() + size.slice(1);
+		renderPerfCharts();
+	}
+
+	function filterWsResp(size) {
+		wsRespFilter = size;
+		const idx = sizeSteps.indexOf(size);
+		const slider = document.getElementById('ws-resp-slider');
+		if (slider && idx !== -1) slider.value = idx;
+		const label = document.getElementById('ws-resp-label');
+		if (label) label.textContent = size.charAt(0).toUpperCase() + size.slice(1);
+		renderPerfCharts();
+	}
+
+	function renderPerfCharts() {
+		if (!rawBenchmarkData) return;
+
+		const category = currentCategoryFilter;
+		const workerCount = currentWorkerFilter;
+
+		const isWebsocket = (category === 'websockets' || category === 'websocket' || category === 'ws');
+
+		const catKeys = isWebsocket
+			? ['websockets', 'websocket', 'ws']
+			: [category, category.toLowerCase(), category.toUpperCase()];
+
+		let categoryData = [];
+		for (const key of catKeys) {
+			if (Array.isArray(rawBenchmarkData[key])) {
+				categoryData = rawBenchmarkData[key];
+				break;
+			}
+		}
+
+		const stageControls = document.getElementById('perf-stage-controls');
+		if (stageControls) {
+			if (isWebsocket) {
+				stageControls.style.display = 'flex';
+				const reqIdx = sizeSteps.indexOf(wsReqFilter) !== -1 ? sizeSteps.indexOf(wsReqFilter) : 0;
+				const respIdx = sizeSteps.indexOf(wsRespFilter) !== -1 ? sizeSteps.indexOf(wsRespFilter) : 0;
+				const reqCap = wsReqFilter.charAt(0).toUpperCase() + wsReqFilter.slice(1);
+				const respCap = wsRespFilter.charAt(0).toUpperCase() + wsRespFilter.slice(1);
+
+				stageControls.innerHTML = `
+            <div class="perf-stage-row" style="display: flex; gap: 2rem; flex-wrap: wrap; justify-content: center; width: 100%;">
+              <div class="perf-slider-group" style="flex: 1; min-width: 220px; max-width: 350px;">
+                <label class="perf-slider-label">Payload Size: <span id="ws-req-label">${reqCap}</span></label>
+                <input type="range" id="ws-req-slider" min="0" max="2" value="${reqIdx}" step="1" oninput="onWsReqSliderChange(this.value)" class="perf-slider">
+              </div>
+              <div class="perf-slider-group" style="flex: 1; min-width: 220px; max-width: 350px;">
+                <label class="perf-slider-label">Response Size: <span id="ws-resp-label">${respCap}</span></label>
+                <input type="range" id="ws-resp-slider" min="0" max="2" value="${respIdx}" step="1" oninput="onWsRespSliderChange(this.value)" class="perf-slider">
+              </div>
+            </div>
+          `;
+			} else {
+				stageControls.style.display = 'none';
+				stageControls.innerHTML = '';
+			}
+		}
+
+		let entries = categoryData.filter(item => item.workers === workerCount);
+		if (isWebsocket) {
+			const reqTerm = wsReqFilter === 'medium' ? '(medium|med)' : wsReqFilter;
+			const respTerm = wsRespFilter === 'medium' ? '(medium|med)' : wsRespFilter;
+			const reqRegex = new RegExp(`${reqTerm}_req`, 'i');
+			const respRegex = new RegExp(`${respTerm}_resp`, 'i');
+			entries = entries.filter(item => item.stage && reqRegex.test(item.stage) && respRegex.test(item.stage));
+		}
+
+		const descEl = document.getElementById('perf-category-desc');
+		if (descEl) {
+			const catLower = category.toLowerCase();
+			if (catLower === 'counter') {
+				descEl.innerHTML = 'JSON unmarshaling &rarr; integer increment &rarr; JSON marshaling';
+			} else if (catLower === 'crud') {
+				descEl.innerHTML = 'Database workload mix: Create, Update, List, and View Single record';
+			} else if (isWebsocket) {
+				let payloadDetails = '';
+				if (entries.length > 0 && entries[0].stats) {
+					const bytesSent = entries[0].stats.AvgBytesSent || 0;
+					const bytesRecv = entries[0].stats.AvgBytesReceived || 0;
+					payloadDetails = ` &bull; Payload: Request <strong>${formatBytes(bytesSent)}</strong>, Response <strong>${formatBytes(bytesRecv)}</strong>`;
+				}
+				descEl.innerHTML = `Persistent socket throughput across payload categories${payloadDetails}`;
+			} else if (catLower == 'task') {
+				descEl.innerHTML = 'Submitting AI task to a queue &rarr; Waiting for AI task execution to return';
+			} else {
+				descEl.innerHTML = '';
+			}
+		}
+
+		const rpsContainer = document.getElementById('rps-bars-container');
+		const latencyContainer = document.getElementById('latency-bars-container');
+
+		if (entries.length === 0) {
+			if (rpsContainer) rpsContainer.innerHTML = '<div style="color: var(--text-dark); padding: 2rem 0; text-align: center;">No benchmark metrics available for this configuration.</div>';
+			if (latencyContainer) latencyContainer.innerHTML = '<div style="color: var(--text-dark); padding: 2rem 0; text-align: center;">No benchmark metrics available for this configuration.</div>';
+			return;
+		}
+
+		const targetMap = {};
+		entries.forEach(item => {
+			let name = item.target.replace(' Local Server', '');
+			const mapKey = item.stage ? `${item.target}_${item.stage}` : name;
+
+			if (!targetMap[mapKey] || (item.duration && item.duration.includes('1m'))) {
+				targetMap[mapKey] = {
+					name: name,
+					isLariv: name.includes('Lariv'),
+					rps: Math.round(item.stats.AvgRPS),
+					latencyMs: (item.stats.AvgLatency / 1e6).toFixed(2)
+				};
+			}
+		});
+
+		const list = Object.values(targetMap);
+		list.sort((a, b) => b.isLariv ? 1 : -1);
+
+		const maxRPS = Math.max(...list.map(i => i.rps), 1);
+		const maxLatency = Math.max(...list.map(i => parseFloat(i.latencyMs)), 0.001);
+
+		if (rpsContainer) {
+			rpsContainer.innerHTML = list.map(item => {
+				const pct = Math.min(100, Math.round((item.rps / maxRPS) * 100));
+				const fillClass = item.isLariv ? 'bar-fill-lariv' : 'bar-fill-other';
+				return `
+            <div class="bar-item">
+              <div class="bar-header">
+                <span>${item.name}</span>
+                <span>${item.rps.toLocaleString()} req/s</span>
+              </div>
+              <div class="bar-track">
+                <div class="bar-fill ${fillClass}" style="width: ${pct}%;"></div>
+              </div>
+            </div>
+          `;
+			}).join('');
+		}
+
+		if (latencyContainer) {
+			latencyContainer.innerHTML = list.map(item => {
+				const pct = Math.min(100, Math.round((parseFloat(item.latencyMs) / maxLatency) * 100));
+				const fillClass = item.isLariv ? 'bar-fill-lariv' : 'bar-fill-other';
+				return `
+            <div class="bar-item">
+              <div class="bar-header">
+                <span>${item.name}</span>
+                <span>${item.latencyMs} ms</span>
+              </div>
+              <div class="bar-track">
+                <div class="bar-fill ${fillClass}" style="width: ${pct}%;"></div>
+              </div>
+            </div>
+          `;
+			}).join('');
+		}
+	}
+
+	function formatBytes(bytes) {
+		if (!bytes || bytes === 0) return '0 B';
+		if (bytes >= 1024 * 1024) return (bytes / (1024 * 1024)).toFixed(1) + ' MB';
+		if (bytes >= 1024) return (bytes / 1024).toFixed(1) + ' KB';
+		return Math.round(bytes) + ' B';
+	}
+
+	fetchBenchmarkMetrics();
+</script>
+
+{{ template "footer" . }}
