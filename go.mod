@@ -2,7 +2,7 @@ module github.com/lariv-in/lariv-website
 
 go 1.26.5
 
-require github.com/lariv-in/lariv v0.6.10
+require github.com/lariv-in/lariv v0.6.11
 
 require (
 	cel.dev/expr v0.25.1 // indirect
@@ -102,5 +102,4 @@ require (
 	gorm.io/driver/postgres v1.6.0 // indirect
 	gorm.io/driver/sqlite v1.6.0 // indirect
 	gorm.io/gorm v1.31.1 // indirect
-	maragu.dev/gomponents v1.3.0 // indirect
 )

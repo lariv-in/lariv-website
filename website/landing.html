@@ -530,9 +530,10 @@
 			<h1>One Platform, <span class="gradient-text">Every App</span></h1>
 			<p>A truly open framework to replace every third-party SaaS tool you run today.</p>
 			<div class="hero-actions">
-				<a href="https://pkg.go.dev/github.com/lariv-in/lariv/docs/quickstart" class="btn btn-primary"
-					target="_blank">Get Started</a>
-				<a href="/pricing" class="btn btn-secondary">Host with Us</a>
+				<a href="/pricing" class="btn btn-primary" target="_blank">Host with Us</a>
+				<a href="https://pkg.go.dev/github.com/lariv-in/lariv/docs/quickstart" class="btn btn-secondary">
+					Host Yourself
+				</a>
 				<a href="https://github.com/lariv-in/lariv" class="btn btn-secondary" target="_blank">
 					<svg style="margin-right: 0.5rem; vertical-align: middle; fill: currentColor;" width="20"
 						height="20" viewBox="0 0 24 24">
@@ -545,8 +546,7 @@
 		</div>
 
 		<div class="hero-visual">
-			<img src="/static/main-artwork.svg" alt="Lariv Main Artwork"
-				style="width: 100%; max-width: 400px; height: auto;">
+			<img src="/static/main-artwork.svg" alt="Lariv Main Artwork" style="width: 512px; height: auto;">
 		</div>
 	</div>
 </section>
@@ -804,11 +804,12 @@
 				<button class="badge perf-cat-tab active" onclick="filterPerfCategory('crud')">CRUD</button>
 				<button class="badge perf-cat-tab" onclick="filterPerfCategory('task')">AI Benchmarks</button>
 				<button class="badge perf-cat-tab" onclick="filterPerfCategory('counter')">Counter</button>
-				<button class="badge perf-cat-tab" onclick="filterPerfCategory('websockets')">Websockets</button>
 			</div>
 			<div class="perf-worker-group perf-slider-group">
-				<label for="worker-slider" class="perf-slider-label">Concurrency: <span id="worker-count-label">1 Worker</span></label>
-				<input type="range" id="worker-slider" min="0" max="2" value="0" step="1" oninput="onWorkerSliderChange(this.value)" class="perf-slider">
+				<label for="worker-slider" class="perf-slider-label">Concurrency: <span id="worker-count-label">1
+						Worker</span></label>
+				<input type="range" id="worker-slider" min="0" max="2" value="0" step="1"
+					oninput="onWorkerSliderChange(this.value)" class="perf-slider">
 			</div>
 		</div>
 
@@ -1153,11 +1154,8 @@
 		const category = currentCategoryFilter;
 		const workerCount = currentWorkerFilter;
 
-		const isWebsocket = (category === 'websockets' || category === 'websocket' || category === 'ws');
 
-		const catKeys = isWebsocket
-			? ['websockets', 'websocket', 'ws']
-			: [category, category.toLowerCase(), category.toUpperCase()];
+		const catKeys = [category, category.toLowerCase(), category.toUpperCase()];
 
 		let categoryData = [];
 		for (const key of catKeys) {
@@ -1169,40 +1167,11 @@
 
 		const stageControls = document.getElementById('perf-stage-controls');
 		if (stageControls) {
-			if (isWebsocket) {
-				stageControls.style.display = 'flex';
-				const reqIdx = sizeSteps.indexOf(wsReqFilter) !== -1 ? sizeSteps.indexOf(wsReqFilter) : 0;
-				const respIdx = sizeSteps.indexOf(wsRespFilter) !== -1 ? sizeSteps.indexOf(wsRespFilter) : 0;
-				const reqCap = wsReqFilter.charAt(0).toUpperCase() + wsReqFilter.slice(1);
-				const respCap = wsRespFilter.charAt(0).toUpperCase() + wsRespFilter.slice(1);
-
-				stageControls.innerHTML = `
-            <div class="perf-stage-row" style="display: flex; gap: 2rem; flex-wrap: wrap; justify-content: center; width: 100%;">
-              <div class="perf-slider-group" style="flex: 1; min-width: 220px; max-width: 350px;">
-                <label class="perf-slider-label">Payload Size: <span id="ws-req-label">${reqCap}</span></label>
-                <input type="range" id="ws-req-slider" min="0" max="2" value="${reqIdx}" step="1" oninput="onWsReqSliderChange(this.value)" class="perf-slider">
-              </div>
-              <div class="perf-slider-group" style="flex: 1; min-width: 220px; max-width: 350px;">
-                <label class="perf-slider-label">Response Size: <span id="ws-resp-label">${respCap}</span></label>
-                <input type="range" id="ws-resp-slider" min="0" max="2" value="${respIdx}" step="1" oninput="onWsRespSliderChange(this.value)" class="perf-slider">
-              </div>
-            </div>
-          `;
-			} else {
-				stageControls.style.display = 'none';
-				stageControls.innerHTML = '';
-			}
+			stageControls.style.display = 'none';
+			stageControls.innerHTML = '';
 		}
 
 		let entries = categoryData.filter(item => item.workers === workerCount);
-		if (isWebsocket) {
-			const reqTerm = wsReqFilter === 'medium' ? '(medium|med)' : wsReqFilter;
-			const respTerm = wsRespFilter === 'medium' ? '(medium|med)' : wsRespFilter;
-			const reqRegex = new RegExp(`${reqTerm}_req`, 'i');
-			const respRegex = new RegExp(`${respTerm}_resp`, 'i');
-			entries = entries.filter(item => item.stage && reqRegex.test(item.stage) && respRegex.test(item.stage));
-		}
-
 		const descEl = document.getElementById('perf-category-desc');
 		if (descEl) {
 			const catLower = category.toLowerCase();
@@ -1210,14 +1179,6 @@
 				descEl.innerHTML = 'JSON unmarshaling &rarr; integer increment &rarr; JSON marshaling';
 			} else if (catLower === 'crud') {
 				descEl.innerHTML = 'Database workload mix: Create, Update, List, and View Single record';
-			} else if (isWebsocket) {
-				let payloadDetails = '';
-				if (entries.length > 0 && entries[0].stats) {
-					const bytesSent = entries[0].stats.AvgBytesSent || 0;
-					const bytesRecv = entries[0].stats.AvgBytesReceived || 0;
-					payloadDetails = ` &bull; Payload: Request <strong>${formatBytes(bytesSent)}</strong>, Response <strong>${formatBytes(bytesRecv)}</strong>`;
-				}
-				descEl.innerHTML = `Persistent socket throughput across payload categories${payloadDetails}`;
 			} else if (catLower == 'task') {
 				descEl.innerHTML = 'Submitting AI task to a queue &rarr; Waiting for AI task execution to return';
 			} else {

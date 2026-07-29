@@ -23,12 +23,12 @@ func main() {
 		p_blog.GetPlugin(),
 	}
 
-	config, err := lariv.LoadConfigFromFile("config.toml", plugins)
+	app, err := lariv.NewBuilder().AddPlugins(plugins).LoadConfigFromFile("config.toml")
 	if err != nil {
 		panic(err)
 	}
 
-	if err := lariv.Start(config, plugins); err != nil {
+	if err := app.Start(); err != nil {
 		slog.Error(err.Error())
 	}
 }
